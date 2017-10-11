@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>student system</title>
+
+	<!-- 1.jquery framework -->
+	<script src="frameworks/jquery-2.1.4/jquery.min.js"></script>
+
+	<!--2. bootstrop framework -->
+	<script src="frameworks/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="frameworks/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+	<!-- 3.font-awesome -->
+	<link rel="stylesheet" href="frameworks/font-awesome-4.7.0/css/font-awesome.min.css">
+	<!--4.import css defined by yourself-->
+	<link rel="stylesheet" href="css/style.css">
+
+	<script>
+		//获取浏览器视口的高度，再减去上下的高度.则中间的高度可固定
+		function initHeight(){
+			var height = $(window).height();
+			console.log(height);
+			var ch = height - 110;
+			$('.content').css('height',ch+'px');
+			$('.navleft').css('height',ch+'px');
+		}
+		$(function(){
+			//初始化页面
+			initHeight();
+			//为左侧栏绑定事件，先解绑
+			$('.navleft dd').off();
+			$('.navleft dd').on('click',function(){
+				var page = $(this).attr('page');
+				//为右侧内容动态显示页面
+				$('section.content').load(page);
+			});
+			//模拟点击事件
+			$('.navleft dd').eq(0).trigger('click');
+		})
+	</script>
+</head>
+<body>
+	<header class="header">
+		<h2>学生信息管理系统</h2>
+	</header>
+
+	<article class="container">
+		<section class="navleft">
+			<dl>
+				<dt style="margin-bottom: 20px;font-size: 20px;">学生系统</dt>
+				<dd page="pages/student.html"><i class="fa fa-user-o fa-lg"> &nbsp;</i><a href="javascript:void(0)">学生信息管理</a></dd>
+				<dd page="pages/course.html"><i class="fa fa-address-card-o fa-lg">&nbsp;</i><a href="javascript:void(0)">课程信息管理</a></dd>
+				<dd page="pages/class.html"><i class="fa fa-meetup fa-lg">&nbsp;</i><a href="javascript:void(0)">班级信息管理</a></dd>
+				<dd page="pages/chooseCourse.html"><i class="fa fa-ravelry fa-lg">&nbsp;</i><a href="javascript:void(0)">选课信息管理</a></dd>
+			</dl>
+		</section>
+		<section class="content">
+			
+		</section>
+	</article>
+
+	<footer class="footer">
+		<p style="margin:0 auto;width: 300px;text-align: center;">&copy;chenj&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:1441935@qq.com">mail:14489135</a></p>
+		<address style="margin:0 auto;width: 300px; display: block;text-align: center;">江苏苏州昆山巴城镇</address>
+	</footer>
+</body>
+</html>

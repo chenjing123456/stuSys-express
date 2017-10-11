@@ -1,0 +1,193 @@
+<h3>学生管理</h3>
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<th>num</th>
+			<th>name</th>
+			<th>gender</th>
+			<th>brith</th>
+			<th>clazz_id</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+
+		</tr>
+	</tbody>
+</table>
+<div class="opts">
+	<button class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-pencil"></span>修改</button>
+	<button class="btn btn-info btn-sm"><span class="glyphicon glyphicon-plus"></span>添加</button>
+	<button class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash"></span>删除</button>
+</div>
+
+<!-- 模态框 -->
+<div class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+	<!-- 模态框头部 -->
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">修改学生信息</h4>
+      </div>
+	<!-- 模态框身体 -->
+      <div class="modal-body">
+			<form action="" class="studentForm">
+					  <input type="hidden" name="id">
+				name: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="name"><br>
+				gender:&nbsp;&nbsp;
+				<label for="female"><input id="female" type="radio" name="gender" value="女">女</label>
+				<label for="male"><input id="male" type="radio" name="gender" value="男">男</label>
+				<br>
+				brith:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="text" name="brith">
+				<br>
+				clazz_id:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="text" name="clazz_id">
+				<br>
+			</form>
+      </div>
+	<!-- 模态框底部 -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary updbtn">Save changes</button>
+      </div>
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+<script>
+	$(function(){
+		//找到所有的学生
+		$.getJSON('student/findAll',function(data){
+			console.log(data);
+			data.forEach(function(item){
+
+				var brith = item.brith ? item.brith.slice(0,item.brith.indexOf('T')) : '';
+				var newTr ='<tr>'
+					+'<td><input type="checkbox" value="'+item.id+'"></td>'
+					+'<td>'+item.name+'</td>'
+					+'<td>'+item.gender+'</td>'
+					+'<td>'+brith+'</td>'
+					+'<td>'+item.clazz_id+'</td>'
+					+'</tr>';
+				$('tbody').append(newTr);
+
+			})
+			
+		});
+		
+		//修改学生信息
+		  //点击修改按钮
+		$('.opts button').eq(0).off();//先解绑，再绑定事件
+		$('.opts button').eq(0).on('click',function(){
+			var ids = $('tbody input:checkbox:checked').toArray().map(function(item){
+				return item.value;
+			});
+			if(ids.length>0){
+				var id = ids[0];
+				//通过id查找数据
+				$.getJSON('student/findById?id='+id,function(data){
+					var brith = data[0].brith ? data[0].brith.slice(0,data[0].brith.indexOf('T')):'';
+					$('.studentForm input[name=id]').val(data[0].id);
+					$('.studentForm input[name=name]').val(data[0].name);
+					$('.studentForm input[name=gender]').val(data[0].gender);
+					$('.studentForm input[name=brith]').val(brith);
+					$('.studentForm input[name=clazz_id]').val(data[0].clazz_id);
+					// 显示膜态框
+					$('.modal').modal('show');
+				})
+			} else{
+				alert('请选中你要修改的信息');
+			}
+			//点击保存按钮
+			$('.updbtn').off();
+			$('.updbtn').on('click',function(){
+				var id = $('.studentForm input[name=id]').val();
+				var name = $('.studentForm input[name=name]').val();
+				var gender =$('.studentForm input[name=gender]').val();
+				var brith =$('.studentForm input[name=brith]').val();
+				var clazz_id =$('.studentForm input[name=clazz_id]').val();
+				
+				var student = {
+					id:id,
+					name:name,
+					gender:gender,
+					brith:brith,
+					clazz_id:clazz_id
+				};
+				
+				$.ajax('student/update',{
+			        'data':student,
+			        'method':'POST',
+			        'content-Type':'application/json',
+			        success:function(data){
+			          $('.modal').modal('hide');
+			          
+			        }
+			    })
+				$('.navleft dd').eq(0).trigger('click');
+			})
+		});		
+		
+
+		//添加数据
+		  //点击添加按钮
+		$('.opts button').eq(1).off();
+		$('.opts button').eq(1).on('click',function(){
+			$('.modal').modal('show');
+			//点击保存按钮
+			$('.updbtn').off();
+			$('.updbtn').on('click',function(){
+				var name = $('.studentForm input[name=name]').val();
+				var gender =$('.studentForm input[name=gender]').val();
+				var brith =$('.studentForm input[name=brith]').val();
+				var clazz_id =$('.studentForm input[name=clazz_id]').val();
+				var student = {
+					name:name,
+					gender:gender,
+					brith:brith,
+					clazz_id:clazz_id
+				}
+				$.ajax('student/save',{
+					'data':student,
+					'method':'POST',
+					'content-Type':'application/json',
+					success:function(data){
+						$('.modal').modal('hide');
+						
+					}
+				})
+				$('.navleft dd').eq(0).trigger('click');
+			})
+			
+		});
+		//删除数据
+		  //点击删除按钮
+		$('.opts button').eq(2).off();
+		$('.opts button').eq(2).on('click',function(){
+			var ids = $('tbody input:checkbox:checked').toArray().map(function(item){
+				return item.value;
+			})
+			console.log(ids);
+			if(ids.length>0){
+				$.ajax({
+					url:'student/batchDelete',
+					data:JSON.stringify(ids),//变成json格式的字符串传递给后台
+					method:'post',
+					contentType:'application/json',//默认是表单格式，必须要加
+					success:function(data){
+						loadData();//数据库进行删除操作之后，重新加载页面，获得新数据（又会重新操作一次student/findAll）
+						// $('.navleft dd').eq(0).trigger('click');
+					}
+				})
+				$('.navleft dd').eq(0).trigger('click');
+			} else {
+				alert('请选择要删除的学生');
+			}
+			
+		})
+	});
+
+</script>

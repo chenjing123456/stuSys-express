@@ -1,0 +1,30 @@
+*{
+	margin:0;
+	padding: 0;
+}
+header.header{
+	border-bottom: 2px double #ccc;
+	height: 60px;
+}
+article.container{
+	overflow: hidden;
+}
+section.navleft{
+	padding-top:90px;
+	float: left;
+	width: 160px;
+	border-right: 1px solid #ccc;
+	box-sizing: border-box;
+}
+dd{
+	margin-top: 10px;
+}
+section.content{
+	margin-left: 165px;
+	padding: 10px;
+	overflow-y: scroll;
+}
+footer.footer{
+	border-top:1px solid #ccc;
+	height: 50px;
+}
